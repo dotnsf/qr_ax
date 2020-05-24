@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<title>Sample for QR_AX</title>
+<script type="text/javascript" src="//code.jquery.com/jquery-2.2.4.min.js"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"/>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="./qr_ax.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<meta name="apple-mobile-web-app-title" content="QR_AX"/>
+
+<style type="text/css">
+html, body{
+  text-align: center;
+  background-color: #fafafa;
+  font-size: 20px;
+  color: #333;
+}
+.hide{
+  display: none;
+}
+</style>
+
+<script>
+$(function(){
+  var selfInput = $(this).find( 'input[type=file]' );
+  selfInput.change( function(){
+    var file = $(this).prop('files')[0];
+    if( !file.type.match( /image\/\w+/ ) ){
+      alert( '画像ファイル以外は利用できません' );
+      return;
+    }
+
+    var reader = new FileReader();
+    if( this.files.length ){
+      if( file.type.match('image.*') ){
+        reader.onload = function(){
+          var img = new Image();
+          img.src = reader.result;
+          img.addEventListener( 'load', function(){
+            $("#base").attr( 'src', img.src );
+
+            var canvas = document.getElementById( 'canvas_id' );
+            if( !canvas || !canvas.getContext ){
+              return false;
+            }
+            var ctx = canvas.getContext( '2d' );
+            ctx.drawImage( img, 0, 0, canvas.width, canvas.height );
+            generateQRCode();
+          }, false );
+        };
+        reader.onerror = function( e ){
+          console.log( 'error: ' + e );
+        };
+        reader.readAsDataURL( file );
+      }
+    }
+  });
+});
+
+function generateQRCode(){
+  var data = qrCode( 'canvas_id', 'Title', 'Author', 'Town' );
+  if( data && data.length == 620 ){
+    data2qrcode( data, '/qrcode', 'img_id' );
+  }
+}
+</script>
+</head>
+<body>
+
+<div class="container imgSelect">
+  <input type="file" name="file1"/>
+</div>
+
+<hr/>
+<div id="cvs" class="container" style="position: relative;">
+  <img id="base"/>
+</div>
+
+<hr/>
+<div class="container">
+  <canvas id="canvas_id" width="32" height="32" class="hide"></canvas>
+  <img id="img_id" width="300" height="300"/>
+</div>
+
+</body>
+</html>
