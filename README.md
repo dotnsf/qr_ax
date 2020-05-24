@@ -22,7 +22,7 @@ JavaScript library for QRcode generator for Animal CROSSing.
 1. Run following JavaScript sample with options : 
 
 ```
-&lt;script src="/qr_ax.js"&gt;&lt;/script&gt;
+<script src="/qr_ax.js"></script>
 
   :
   :
