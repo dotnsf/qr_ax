@@ -218,6 +218,14 @@ function qrCode( canvas_id, title, author, town ){
     color_palette_table.push( v );
   }
 
+
+  //.
+  //. 現状　：カラーインデックスの上位15色を調べ、他の色を上位15色に近い色にあてはめて減色
+  //. 改良案：まず15色に減色（どうやって？）してから、これらの15色をカラーインデックス化するべき？
+  //. -> 意味ある？？
+  //.
+
+
   //. 画像データ
   var tmpimgdata = [];
   var imagedata = ctx.getImageData( 0, 0, 32, 32 );
@@ -239,7 +247,7 @@ function qrCode( canvas_id, title, author, town ){
   //. （減色の準備としての）色カウント
   var counts = [];
   for( var i = 0; i < 159; i ++ ){
-    counts.push( 0 );
+    counts.push( 0 );  //. パレットインデックス毎の利用数
   }
   for( var i = 0; i < tmpimgdata.length; i ++ ){
     counts[tmpimgdata[i]] ++;
@@ -400,7 +408,7 @@ function data2qrcode( data, postpath, img_id ){
       var data = this.response;
       var reader = new FileReader();
       reader.onloadend = function(){
-        console.log( reader.result );
+        //console.log( reader.result );
         var qrcode_img = document.getElementById( img_id );
         qrcode_img.src = reader.result;
       }
